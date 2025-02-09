@@ -30,7 +30,7 @@ class TextTensorizer:
     def build_vocab(cls,corpus: List[str], 
                     specials: List[str], 
                     default_token: str=None,
-                    save_vocab: bool=False,
+                    output_directory: str=None,
                     min_freq: int=1):
         counter = Counter()
         for text in corpus:
@@ -50,16 +50,16 @@ class TextTensorizer:
             vocab_stoi = result.get_stoi()
             result.set_default_index(vocab_stoi[default_token])
 
-        if save_vocab is True:
-            cls.save_vocab(result)
+        if output_directory is not None:
+            cls.save_vocab(result, output_directory)
 
         return result.get_itos(), result.get_stoi()
     
     # Saves ITOS and STOI separately (for compatibility)
     @staticmethod
-    def save_vocab(lang_vocab):
+    def save_vocab(lang_vocab, output_directory: str):
 
-        with open("vocab_itos.pickle", "wb+") as f:
+        with open(f"{output_directory}vocab_itos.pickle", "wb+") as f:
             pickle.dump(lang_vocab.get_itos(), f)
-        with open("vocab_stoi.pickle", "wb+") as f:
+        with open(f"{output_directory}vocab_stoi.pickle", "wb+") as f:
             pickle.dump(lang_vocab.get_stoi(), f)
